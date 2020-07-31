@@ -125,18 +125,18 @@ while keepGoing:
 			print('Thanks for playing.')
 			sys.exit()
 		invalidInput = validateGuess(guess)			# Use function to validate user input
-	guessX = ord(guess[0].upper()) - 65				# Added an extra variable to make it more readable
-	guessY = int(guess[1:]) - 1						# Added an extra variable to make it more readable
-	if playerGrid[guessX][guessY] != ' ':
+	guessA = ord(guess[0].upper()) - 65				# Added an extra variable to make it more readable
+	guessB = int(guess[1:]) - 1						# Added an extra variable to make it more readable
+	if playerGrid[guessA][guessB] != ' ':
 		print('You have already guessed that.')
-	elif computerShips[guessX][guessY] != ' ':
+	elif computerShips[guessA][guessB] != ' ':
 		print('Hit')
-		playerGrid[guessX][guessY] = 'X'
+		playerGrid[guessA][guessB] = 'X'
 		numOfHits += 1
 		totalGuesses += 1
 	else:
 		print('Miss')
-		playerGrid[guessX][guessY] = 'O'
+		playerGrid[guessA][guessB] = 'O'
 		totalGuesses += 1
 	if numOfHits == 17:
 		keepGoing = False

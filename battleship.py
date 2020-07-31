@@ -2,18 +2,13 @@
 # 6-27-2020
 
 """
-This is a single player battleship game.
-The ships will be randomly placed, and the user will try to find them all.
-
-create a function to randomly place the ships and return a grid to store
-Create two lists, one for the ships, and one for the board.
-create a function to print a pretty version of the board, O's for guesses and X's for hits
-Implement gameplay
-	keep a total of hits and add 1 to each hit.  end game when the total ='s the total available hits
-
+This is a single player version of the popular game called Battleship.
+The ships will be randomly placed by the program, and the user will try to find them all.
+There are 5 ships with lengths of 2, 3, 3, 4, and 5.
+Misses will be marked with a 'O' and hits will be marked with an 'X'
 """
 
-import random, sys, re
+import random, sys
 # This function will take an input of a 10 x 10 list and print a board to the console.
 def printList(inputList):
 	print('    1   2   3   4   5   6   7   8   9   10')
@@ -25,8 +20,6 @@ def printList(inputList):
 			print(' | ', end = '')
 		print()
 		print('  -----------------------------------------')
-	
-		
 # end printList	
 
 # This function returns a grid of the placed ships
@@ -45,32 +38,38 @@ def placeShips():
 	ships = [2, 3, 3, 4, 5]
 	for i in ships:
 		while True:
+			# I used a try block because continues and breaks were only breaking out of the 1st loop and not the 2nd that I needed them to.
+			# This way looks cleaner, and I can use the exceptions for logging later
 			try:
-				placeX = random.randint(0, (10-i))
-				placeY = random.randint(0, (10-i))
-				# 0 will be north-south, 1 will be east to west
-				direction = random.randint(0, 1)
+				direction = random.randint(0, 1) 		# 0 will be north-south, 1 will be east to west
+				if direction == 0:
+					placeX = random.randint(0, 9)
+					placeY = random.randint(0, (10-i))
+				else:
+					placeX = random.randint(0, (10-i))
+					placeY = random.randint(0, 9)
 				# Check that the placement isn't occupied, raise an exception to try again if they are.
 				if direction == 0:
 					for j in range(placeY, (placeY + i)):
-						if retGrid[j][placeX] == '*':
+						if retGrid[j][placeX] != ' ':
 							raise Exception('The ship was placed on another ship, trying again')
 				else:
 					for j in range(placeX, (placeX + i)):
-						if retGrid[placeY][j] == '*':
+						if retGrid[placeY][j] != ' ':
 							raise Exception('The ship was placed on another ship, trying again')
 				# Change the characters in the grid if they weren't occupied
 				if direction == 0:
 					for j in range(placeY, (placeY + i)):
-						retGrid[j][placeX] = '*'
+						retGrid[j][placeX] = str(i)
 				else:
 					for j in range(placeX, (placeX + i)):
-						retGrid[placeY][j] = '*'
+						retGrid[placeY][j] = str(i)
 				break
 			except:
 				pass
 	return(retGrid)
 # end placeShips	
+
 # This function will take a an input string and make sure that it is a valid guess for the board
 # ie. A1, B5, J10 etc
 # This funcion will also print error message to the console for the user.
@@ -90,8 +89,9 @@ def validateGuess(inputString):
 		print('The given number is invalid, please enter using format: C2')
 		returnBool = False
 	return returnBool
+#end validateGuess
 
-# Setup
+# Setup and info for the game
 random.seed()
 computerShips = placeShips()
 playerGrid = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -104,26 +104,32 @@ playerGrid = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]
-print('This is a single player battleship game')
+print('Welcome to the game.')
+print('This is a single player battleship game.')
 print('The computer will place 5 ships on a 10x10 grid and it\'s your job to find them.')
+print('The ships have lengths of 2, 3, 3, 4, and 5.')
 
 keepGoing = True
 numOfHits = 0
 totalGuesses = 0
 while keepGoing:
-	print('Here is your board, please make a guess.  Example: B2')
+	print('Here is your board:')
+	# printList(computerShips) #Uncomment this for easy testing
 	printList(playerGrid)
 	invalidInput = False
 	guess = ''
 	while not invalidInput:
-		print('Please enter a guess.')
+		print('Please enter a guess, i.e. B2, or enter Q to quit.')
 		guess = input()
+		if len(guess) > 0 and guess[0].lower() == 'q':	# Allows the user to quit the game early
+			print('Thanks for playing.')
+			sys.exit()
 		invalidInput = validateGuess(guess)			# Use function to validate user input
 	guessX = ord(guess[0].upper()) - 65				# Added an extra variable to make it more readable
 	guessY = int(guess[1:]) - 1						# Added an extra variable to make it more readable
 	if playerGrid[guessX][guessY] != ' ':
-		print('You have already guessed that')
-	elif computerShips[guessX][guessY] == '*':
+		print('You have already guessed that.')
+	elif computerShips[guessX][guessY] != ' ':
 		print('Hit')
 		playerGrid[guessX][guessY] = 'X'
 		numOfHits += 1
@@ -135,5 +141,6 @@ while keepGoing:
 	if numOfHits == 17:
 		keepGoing = False
 		printList(playerGrid)
-		print('Congratulations, you have sunk all of the ships')
-		print('You had a total of ' + str(totalGuesses) + ' guesses')
+		print('Congratulations, you have destroyed all of the ships.')
+		print('You had a total of ' + str(totalGuesses) + ' guesses.')
+		print('Thanks for playing.')

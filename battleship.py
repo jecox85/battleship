@@ -12,6 +12,8 @@ Implement gameplay
 	keep a total of hits and add 1 to each hit.  end game when the total ='s the total available hits
 
 """
+
+import random
 #This function will take an input of a list and print each item to the console.
 def printList(inputList):
 	for i in inputList:
@@ -29,6 +31,38 @@ def placeShips():
 		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]
+	# ships to be placed randomly in the grid
+	ships = [2, 3, 3, 4, 5]
+	for i in ships:
+		keepGoing = True
+		while keepGoing:
+			try:
+				placeX = random.randint(0, (10-i))
+				placeY = random.randint(0, (10-i))
+				# 0 will be north-south, 1 will be east to west
+				direction = random.randint(0, 1)
+				# Check that the placement isn't occupied
+				if direction == 0:
+					for j in range(placeY, (placeY + i)):
+						if retGrid[j][placeX] == '*':
+							raise Exception('The ship was placed on another ship, trying again')
+				else:
+					for j in range(placeX, (placeX + i)):
+						if retGrid[placeY][j] == '*':
+							raise Exception('The ship was placed on another ship, trying again')
+				# Change the characters in the grid if they weren't occupied
+								# Check that the placement isn't occupied
+				if direction == 0:
+					for j in range(placeY, (placeY + i)):
+						retGrid[j][placeX] = '*'
+				else:
+					for j in range(placeX, (placeX + i)):
+						retGrid[placeY][j] = '*'
+				keepGoing = False
+			except:
+				pass
+	return(retGrid)
+		
 	"""
 	for i in range(len(retGrid)):
 		for j in range(len(retGrid[i])):
@@ -62,4 +96,15 @@ gridList = [
 	'  -----------------------------------------']
 """
 print('This is a single player battleship game')
-placeShips()
+computerShips = placeShips()
+printList(computerShips)
+playerGrid = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+		[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]
